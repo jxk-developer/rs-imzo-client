@@ -258,6 +258,8 @@ export class RsimzoClient extends Hookable<HookTypes> {
     return res.token
   }
 
+  //test commit
+
   public cleanup(iframe: HTMLIFrameElement): void {
     if (iframe && iframe.parentElement) {
       iframe.parentElement.removeChild(iframe)
