@@ -1,33 +1,33 @@
-name: Release
+name: Publish Package to npm
 
-on: 
-  workflow_dispatch: 
+on:
+  release:
+    types: [published]
 
 jobs:
-  build_and_release:
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-
+  release:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v4
 
-    - name: Set up Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: latest
+      - name: Set up Node LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: pnpm install
 
-    - name: Build
-      run: npm run build
+      - name: Build
+        run: pnpm build
 
-    - name: Release
-      run: npx semantic-release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Release
+        uses: simenandre/publish-with-pnpm@v2
+        with:
+          npm-auth-token: ${{ secrets.NPM_TOKEN }}
