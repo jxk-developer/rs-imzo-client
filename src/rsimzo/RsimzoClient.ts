@@ -5,11 +5,13 @@ import { RsPostMessageResult, RsImzoCallMethod, HookTypes, RsImzoClientOptions, 
 
 export class RsimzoClient extends Hookable<HookTypes> {
 
+  //test commit
+
   private readonly iframeProviderId = 'rs-imzo-provider-iframe'
   // private readonly targetOrigin = 'http://10.20.11.87:3030'
   // private readonly targetOrigin = 'http://192.168.31.243:3030'
-  // private readonly targetOrigin = 'http://localhost:3030'
-  private readonly targetOrigin = 'https://rs-imzo.uz'
+  private readonly targetOrigin = 'http://localhost:3030'
+  // private readonly targetOrigin = 'https://rs-imzo.uz'
   private readonly providerPath = `/provider`
   private readonly signPath = `${this.providerPath}/sign`
   private readonly syncPath = `${this.providerPath}/sync`
