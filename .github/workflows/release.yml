@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: lts/*
           registry-url: https://registry.npmjs.org
+          scope: '@jx'
           cache: pnpm
 
       - name: Install dependencies
