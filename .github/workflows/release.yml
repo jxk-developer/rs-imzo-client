@@ -12,9 +12,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - uses: pnpm/action-setup@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 9
+          run_install: false
 
       - name: Set up Node LTS
         uses: actions/setup-node@v4
@@ -24,12 +26,13 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm build
 
-      - name: Release
-        uses: simenandre/publish-with-pnpm@v2
-        with:
-          npm-auth-token: ${{ secrets.NPM_TOKEN }}
+      - name: Publish 🚀
+        shell: bash
+        run: pnpm publish --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
