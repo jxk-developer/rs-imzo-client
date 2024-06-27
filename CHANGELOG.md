@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.5...v0.0.6)
+
+### 🏡 Chore
+
+- **release:** V0.0.5 ([6e01cb3](https://github.com/jxk-developer/rs-imzo-client/commit/6e01cb3))
+
+### 🤖 CI
+
+- Setup pnpm version ([ebd4564](https://github.com/jxk-developer/rs-imzo-client/commit/ebd4564))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.5
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.4...v0.0.5)
