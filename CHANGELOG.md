@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.17
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.16...v0.0.17)
+
+### 🏡 Chore
+
+- Git ignore .env ([2474415](https://github.com/jxk-developer/rs-imzo-client/commit/2474415))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.16
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.15...v0.0.16)
