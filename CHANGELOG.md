@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.12
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.11...v0.0.12)
+
+### 🏡 Chore
+
+- **release:** V0.0.11 ([e796c6f](https://github.com/jxk-developer/rs-imzo-client/commit/e796c6f))
+
+### 🤖 CI
+
+- Add scope ([7169643](https://github.com/jxk-developer/rs-imzo-client/commit/7169643))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.11
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.10...v0.0.11)
