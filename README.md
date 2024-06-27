@@ -12,7 +12,6 @@
 
 - **Enhanced Security and Convenience:** Enhances the level of security and convenience for the users of their services.
 
-
 ## Implementation
 
 To integrate RsImzoClient into your web application, follow the documentation provided with the plugin. Ensure that you have configured the iframe securely and tested the interaction with the key and certificate management system thoroughly.
@@ -26,53 +25,48 @@ Integrating RsImzoClient into your web application is straightforward. You can i
 To install RsImzoClient using npm, run the following command in your project's root directory:
 
 ```bash
-npm install rs-imzo-client --save
+npm install @jx_code/rsimzo-client
+pnpm add @jx_code/rsimzo-client
+yarn add @jx_code/rsimzo-client
 ```
 
 This command adds RsImzoClient to your project dependencies and enables you to import and use it in your web application.
-
+<!-- 
 ### Including via CDN
 
 If you prefer not to use npm, you can include RsImzoClient directly in your HTML file from a CDN. Add the following script tag to the end of `body` section of your HTML:
 
 ```html
 <script src="https://cdn.example.com/rsimzoclient/latest/rsimzoclient.min.js"></script>
-```
+``` -->
 
-## How to use
+## Basic usage
 
-The following example demonstrates how to import and initialize the RsImzoClient, listen for the ready event, and then retrieve signatures using the client. 
-
-> `{ once: true }` means that the event listener is configured to trigger only once. After the event has been handled for the first time, the event listener automatically removes itself. 
+Get list of certificates
 
 ```js
-import { RsImzoClient } from 'rs-imzo-client';
+import { RsimzoClient } from "@jx/rsimzo-client";
 
-const client = new RsImzoClient(options); 
+const rsimzo = new RsimzoClient()
 
-client.on('ready', async () => {
-  const signatures = await client.getSignatures()
-  console.log(signatures)
-}, { once: true })
+const { data: list } = await rsimzo.getCertificates()
+
+if (list) {
+  console.log(list)
+}
 ```
 
-or
+Sign content
 
-```html
-<script src="https://cdn.example.com/rsimzoclient/latest/rsimzoclient.min.js"></script>
+```js
+const content = 'string you want to sign'
+const serial = 'get serial number from rsimzo.getCertificates() method'
 
-<script>
-  const client = new window.RsImzo.Client()
+const { data: pkcs7 } = await rsimzo.sign(serial, btoa(content))
 
-  client.on('ready', async () => {
-    const signatures = await client.getSignatures()
-    console.log(signatures)
-  }, { once: true })
-</script>
+console.log(pkcs7)
 ```
 
 ## Documentation
 
 We strongly encourage you to explore the [Full documentation](#) for RsImzoClient. It's an invaluable asset for deepening your understanding of the library. The documentation provides comprehensive coverage, from introductory concepts to advanced features, ensuring you have all the information needed to effectively integrate and utilize RsImzoClient in your web applications.
-
-
