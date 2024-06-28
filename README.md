@@ -26,8 +26,6 @@ To install RsImzoClient using npm, run the following command in your project's r
 
 ```bash
 npm install @jx_code/rsimzo-client
-pnpm add @jx_code/rsimzo-client
-yarn add @jx_code/rsimzo-client
 ```
 
 This command adds RsImzoClient to your project dependencies and enables you to import and use it in your web application.
@@ -45,7 +43,7 @@ If you prefer not to use npm, you can include RsImzoClient directly in your HTML
 Get list of certificates
 
 ```js
-import { RsimzoClient } from "@jx/rsimzo-client";
+import { RsimzoClient } from "@jx_code/rsimzo-client";
 
 const rsimzo = new RsimzoClient()
 
