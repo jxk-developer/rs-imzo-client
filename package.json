@@ -22,7 +22,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release": "npx changelogen@latest --release"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
