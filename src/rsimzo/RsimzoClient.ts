@@ -107,7 +107,7 @@ export class RsimzoClient  {
     }
 
     const data = this.callMethod<string>({ method: 'parse_pkcs7', data: { pkcs12 }, targetWindow: iframe.contentWindow })
-    this.cleanup(iframe)
+    this.removeProviderIframe(iframe)
 
     return data
   }
@@ -261,7 +261,7 @@ export class RsimzoClient  {
     return res.token
   }
 
-  public cleanup(iframe: HTMLIFrameElement): void {
+  public removeProviderIframe(iframe: HTMLIFrameElement): void {
     if (iframe && iframe.parentElement) {
       iframe.parentElement.removeChild(iframe)
     }
