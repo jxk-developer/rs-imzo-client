@@ -1,11 +1,9 @@
 import { Hookable } from 'hookable'
 import { defu } from "defu";
 import { $Fetch, ofetch } from "ofetch";
-import { RsPostMessageResult, RsImzoCallMethod, HookTypes, RsImzoClientOptions, RsImzoLocale, RsImzoSignOptions, RsImzoSignature, HandshakeOptions } from '~/types'
+import { RsPostMessageResult, RsImzoCallMethod, HookTypes, RsImzoClientOptions, RsImzoSignOptions, RsImzoSignature, HandshakeOptions } from '~/types'
 
 export class RsimzoClient extends Hookable<HookTypes> {
-
-  //test commit
 
   private readonly iframeProviderId = 'rs-imzo-provider-iframe'
   // private readonly targetOrigin = 'http://10.20.11.87:3030'
@@ -111,7 +109,7 @@ export class RsimzoClient extends Hookable<HookTypes> {
     return data
   }
 
-  public async getCertificates(locale: RsImzoLocale = 'uz') {
+  public async getCertificates(locale: string = 'uz') {
     const syncWindow = await this.openWindow(this.buildUrl(this.syncPath, locale), 'RsImzoSync', 320, 420)
 
     const windowClosedPromise: Promise<{ data: null, error: null }> = new Promise((resolve) => {
@@ -170,7 +168,7 @@ export class RsimzoClient extends Hookable<HookTypes> {
     return result
   }
 
-  public async auth(locale: RsImzoLocale = 'uz') {
+  public async auth(locale: string = 'uz') {
     const signWindow = await this.openWindow(this.buildUrl(this.authPath, locale), 'RsImzoAuth', 320, 420)
 
     const windowClosedPromise: Promise<{ data: null, error: null }> = new Promise(() => {
@@ -250,7 +248,7 @@ export class RsimzoClient extends Hookable<HookTypes> {
     })
   }
 
-  private buildUrl(path: string, locale?: RsImzoLocale): string {
+  private buildUrl(path: string, locale?: string): string {
     const l = locale || this.options.locale
     return `${this.targetOrigin}${l === 'uz' ? '' : `/${l}`}${path}`
   }

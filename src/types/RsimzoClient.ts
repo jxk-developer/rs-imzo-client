@@ -9,11 +9,9 @@ export type HookTypes = {
 
 export type RsImzoAction = 'signature_list' | 'sign' | 'ready' | 'parse_pkcs7' | 'certificates_info' | 'auth'
 
-export type RsImzoLocale = 'uz-kr' | 'uz' | 'ru' | 'en'
-
 export interface RsImzoClientOptions {
   baseURL?: string
-  locale?: RsImzoLocale
+  locale?: string
   paths?: {
     generateToken?: string
   }
@@ -21,7 +19,7 @@ export interface RsImzoClientOptions {
 }
 
 export interface RsImzoSignOptions {
-  locale?: RsImzoLocale
+  locale?: string
   attached?: boolean
 }
 
