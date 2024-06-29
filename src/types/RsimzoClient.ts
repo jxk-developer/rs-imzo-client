@@ -1,12 +1,3 @@
-
-type Nullable<T> = T | null | undefined;
-
-export type HookTypes = {
-  'ready': () => void;
-  'sign_window_close': () => void;
-  'certificates_window_close': () => void;
-};
-
 export type RsImzoAction = 'signature_list' | 'sign' | 'ready' | 'parse_pkcs7' | 'certificates_info' | 'auth'
 
 export interface RsImzoClientOptions {
@@ -45,8 +36,8 @@ export interface RsImzoCallMethod {
 }
 
 export interface RsPostMessageResult<T> {
-  error?: Nullable<PostMessageError>
-  data?: Nullable<T>
+  error?: PostMessageError | null
+  data?: T | null
   method?: 'storage_access_prompt'
   success?: boolean
 }

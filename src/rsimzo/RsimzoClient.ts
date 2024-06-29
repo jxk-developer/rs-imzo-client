@@ -1,9 +1,13 @@
-import { Hookable } from 'hookable'
 import { defu } from "defu";
 import { $Fetch, ofetch } from "ofetch";
-import { RsPostMessageResult, RsImzoCallMethod, HookTypes, RsImzoClientOptions, RsImzoSignOptions, RsImzoSignature, HandshakeOptions } from '~/types'
+import { RsPostMessageResult, RsImzoCallMethod, RsImzoClientOptions, RsImzoSignOptions, RsImzoSignature, HandshakeOptions } from '~/types'
 
-export class RsimzoClient extends Hookable<HookTypes> {
+/*
+Error codes
+10001 - Window closed
+*/
+
+export class RsimzoClient  {
 
   private readonly iframeProviderId = 'rs-imzo-provider-iframe'
   // private readonly targetOrigin = 'http://10.20.11.87:3030'
@@ -28,7 +32,6 @@ export class RsimzoClient extends Hookable<HookTypes> {
   }
 
   constructor(options?: RsImzoClientOptions) {
-    super()
     this.isServer = typeof window === 'undefined'
     this.options = defu(options, this.options)
 
@@ -112,12 +115,11 @@ export class RsimzoClient extends Hookable<HookTypes> {
   public async getCertificates(locale: string = 'uz') {
     const syncWindow = await this.openWindow(this.buildUrl(this.syncPath, locale), 'RsImzoSync', 320, 420)
 
-    const windowClosedPromise: Promise<{ data: null, error: null }> = new Promise((resolve) => {
+    const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
         if (syncWindow.closed) {
-          this.callHook('certificates_window_close')
           clearInterval(interval)
-          resolve({ data: null, error: null })
+          return resolve({ data: null, error: { errorCode: 10001, errorMessage: 'window closed' } } as RsPostMessageResult<null>)
         }
       }, 500)
     })
@@ -141,12 +143,11 @@ export class RsimzoClient extends Hookable<HookTypes> {
   public async sign(serialNumber: string, content: string, options?: RsImzoSignOptions) {
     const signWindow = await this.openWindow(this.buildUrl(this.signPath, options?.locale), 'RsImzoSign', 280, 320)
 
-    const windowClosedPromise: Promise<{ data: null, error: null }> = new Promise((resolve) => {
+    const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
         if (signWindow.closed) {
-          this.callHook('sign_window_close')
           clearInterval(interval)
-          resolve({ data: null, error: null })
+          return resolve({ data: null, error: { errorCode: 10001, errorMessage: 'window closed' } } as RsPostMessageResult<null>)
         }
       }, 500)
     })
@@ -171,12 +172,13 @@ export class RsimzoClient extends Hookable<HookTypes> {
   public async auth(locale: string = 'uz') {
     const signWindow = await this.openWindow(this.buildUrl(this.authPath, locale), 'RsImzoAuth', 320, 420)
 
-    const windowClosedPromise: Promise<{ data: null, error: null }> = new Promise(() => {
+    const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
+        console.log(signWindow.closed, 'signWindow.closed');
+
         if (signWindow.closed) {
-          this.callHook('sign_window_close')
           clearInterval(interval)
-          return
+          return resolve({ data: null, error: { errorCode: 10001, errorMessage: 'window closed' } } as RsPostMessageResult<null>)
         }
       }, 500)
     })
@@ -188,6 +190,7 @@ export class RsimzoClient extends Hookable<HookTypes> {
 
     // Wait for either the window to close or the data to be returned
     const result = await Promise.race([windowClosedPromise, dataPromise])
+    console.log(result, 'result');
 
     // Ensure the signWindow is closed
     if (!signWindow.closed) {
