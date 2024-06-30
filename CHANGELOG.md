@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v0.0.18
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.17...v0.0.18)
+
+### 🚀 Enhancements
+
+- Add funcs ([3c43300](https://github.com/jxk-developer/rs-imzo-client/commit/3c43300))
+
+### 🔥 Performance
+
+- Remove hookable plugin ([5ec290a](https://github.com/jxk-developer/rs-imzo-client/commit/5ec290a))
+
+### 💅 Refactors
+
+- Make locale type string ([06f18a7](https://github.com/jxk-developer/rs-imzo-client/commit/06f18a7))
+- Remove function name ([96babdd](https://github.com/jxk-developer/rs-imzo-client/commit/96babdd))
+
+### 📖 Documentation
+
+- Update import module ([fd7598d](https://github.com/jxk-developer/rs-imzo-client/commit/fd7598d))
+
+### 🏡 Chore
+
+- Add release sript ([172ac33](https://github.com/jxk-developer/rs-imzo-client/commit/172ac33))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.17
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.16...v0.0.17)
