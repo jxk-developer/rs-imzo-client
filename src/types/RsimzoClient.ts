@@ -3,8 +3,13 @@ export type RsImzoAction = 'signature_list' | 'sign' | 'ready' | 'parse_pkcs7' |
 export interface RsImzoClientOptions {
   baseURL?: string
   locale?: string
-  paths?: {
-    generateToken?: string
+  instantCertsFetch: boolean
+  paths: {
+    fetchToken: string
+  }
+  storage?: boolean | {
+    prefix?: string
+    localStorage?: boolean
   }
   headers?: Record<string, string>
 }
@@ -45,6 +50,7 @@ export interface RsPostMessageResult<T> {
 export interface PostMessageError {
   errorCode: number;
   errorMessage: string;
+  rawError?: any
 }
 
 export interface HandshakeOptions {
