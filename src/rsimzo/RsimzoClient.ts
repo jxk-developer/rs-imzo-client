@@ -1,7 +1,7 @@
 import { defu } from "defu";
 import { destr } from "destr";
 import { $Fetch, ofetch, FetchError } from "ofetch";
-import { RsPostMessageResult, RsImzoCallMethod, RsImzoClientOptions, RsImzoSignOptions, RsImzoSignature, HandshakeOptions } from '~/types'
+import { RsPostMessageResult, RsCallMethod, RsOptions, RsSignOptions, RsCertificate, RsHandshakeOptions, RsAuthOptions } from '~/types'
 
 /*
 Error codes
@@ -26,7 +26,7 @@ export class RsimzoClient {
 
   private $fetch: $Fetch
 
-  private options: RsImzoClientOptions = {
+  private options: RsOptions = {
     baseURL: '',
     locale: 'en',
     paths: {
@@ -37,17 +37,17 @@ export class RsimzoClient {
     headers: {}
   }
 
-  constructor(options?: RsImzoClientOptions) {
+  constructor(options?: RsOptions) {
     this.isServer = typeof window === 'undefined'
     this.options = defu(options, this.options)
-    console.log(this.options, 'this.options');
+
     this.options.locale = this.getValidatedLocale(this.options.locale!)
 
     this.$fetch = ofetch.create({ baseURL: this.options.baseURL || window.location.origin, headers: options?.headers });
   }
 
-  get certificates(): RsImzoSignature[] {
-    return destr<RsImzoSignature[]>(this.getFromLocalStorage('certificates')) || [];
+  get certificates(): RsCertificate[] {
+    return destr<RsCertificate[]>(this.getFromLocalStorage('certificates')) || [];
   }
 
   private getValidatedLocale(locale: string) {
@@ -78,7 +78,7 @@ export class RsimzoClient {
     return null
   }
 
-  private async callMethod<T>({ method, data, targetWindow }: RsImzoCallMethod): Promise<RsPostMessageResult<T>> {
+  private async callMethod<T>({ method, data, targetWindow }: RsCallMethod): Promise<RsPostMessageResult<T>> {
     if (this.isServer || !targetWindow) {
       console.error('callMethod: Environment or target window not available.')
       return { data: null, error: null }
@@ -154,7 +154,7 @@ export class RsimzoClient {
     })
   }
 
-  private checkWindowLoadedViaHandshake(window: Window, options: HandshakeOptions = {}): Promise<boolean> {
+  private checkWindowLoadedViaHandshake(window: Window, options: RsHandshakeOptions = {}): Promise<boolean> {
     const { retryDelay = 200, timeout = 10000 } = options
     const callTotal = Math.floor(timeout / retryDelay)
     let callCount = 0
@@ -220,8 +220,8 @@ export class RsimzoClient {
     return data
   }
 
-  async getCertificates(locale: string = 'uz') {
-    const syncWindow = await this.openWindow(this.buildUrl(this.syncPath, locale), 'RsImzoSync', 320, 420)
+  async getCertificates(options: Partial<Pick<RsOptions, 'locale' | 'instantCertsFetch'>>) {
+    const syncWindow = await this.openWindow(this.buildUrl(this.syncPath, options.locale), 'RsImzoSync', 320, 420)
 
     const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
@@ -232,10 +232,10 @@ export class RsimzoClient {
       }, 500)
     })
 
-    const dataPromise = this.callMethod<RsImzoSignature[]>({
+    const dataPromise = this.callMethod<RsCertificate[]>({
       method: 'certificates_info',
       targetWindow: syncWindow,
-      data: { instantCertsFetch: this.options.instantCertsFetch }
+      data: { instantCertsFetch: options.instantCertsFetch || this.options.instantCertsFetch }
     })
 
     // Wait for either the window to close or the data to be returned
@@ -268,7 +268,7 @@ export class RsimzoClient {
     return null;
   }
 
-  async sign(serialNumber: string, content: string, options?: RsImzoSignOptions) {
+  async sign(serialNumber: string, content: string, options?: RsSignOptions) {
     const signWindow = await this.openWindow(this.buildUrl(this.signPath, options?.locale), 'RsImzoSign', 280, 320)
 
     const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
@@ -297,8 +297,8 @@ export class RsimzoClient {
     return result
   }
 
-  async auth(locale: string = 'uz') {
-    const signWindow = await this.openWindow(this.buildUrl(this.authPath, locale), 'RsImzoAuth', 320, 420)
+  async auth(options: RsAuthOptions) {
+    const signWindow = await this.openWindow(this.buildUrl(this.authPath, options.locale), 'RsImzoAuth', 320, 420)
 
     const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
