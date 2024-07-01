@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.19
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.18...v0.0.19)
+
+### 💅 Refactors
+
+- Extend package ([0b188d4](https://github.com/jxk-developer/rs-imzo-client/commit/0b188d4))
+
+### 🏡 Chore
+
+- **release:** V0.0.18 ([865458a](https://github.com/jxk-developer/rs-imzo-client/commit/865458a))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.18
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.17...v0.0.18)
