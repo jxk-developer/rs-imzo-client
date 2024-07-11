@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.21
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.20...v0.0.21)
+
+### 🩹 Fixes
+
+- Set window name _blank ([55b2f22](https://github.com/jxk-developer/rs-imzo-client/commit/55b2f22))
+
+### 🏡 Chore
+
+- **release:** V0.0.20 ([223b0b6](https://github.com/jxk-developer/rs-imzo-client/commit/223b0b6))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.20
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.19...v0.0.20)
