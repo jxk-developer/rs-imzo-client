@@ -124,13 +124,13 @@ export class RsimzoClient {
     })
   }
 
-  private openWindow(url: string | URL, title: string, w: number, h: number): Promise<Window> {
+  private openWindow(url: string | URL, w: number, h: number): Promise<Window> {
     const left = (screen.width / 2) - (w / 2) + window.screenLeft
     const top = (screen.height * 0.2) + window.screenTop
 
     return new Promise(async (resolve, reject) => {
       try {
-        const newWindow = window.open(url, title, `
+        const newWindow = window.open(url, '_blank', `
           width=${w},
           height=${h},
           top=${top},
@@ -221,7 +221,7 @@ export class RsimzoClient {
   }
 
   async getCertificates(options: Partial<Pick<RsOptions, 'locale' | 'instantCertsFetch'>>) {
-    const syncWindow = await this.openWindow(this.buildUrl(this.syncPath, options.locale), 'RsImzoSync', 320, 420)
+    const syncWindow = await this.openWindow(this.buildUrl(this.syncPath, options.locale), 320, 420)
 
     const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
@@ -269,7 +269,7 @@ export class RsimzoClient {
   }
 
   async sign(serialNumber: string, content: string, options?: RsSignOptions) {
-    const signWindow = await this.openWindow(this.buildUrl(this.signPath, options?.locale), 'RsImzoSign', 280, 320)
+    const signWindow = await this.openWindow(this.buildUrl(this.signPath, options?.locale), 280, 320)
 
     const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
@@ -298,7 +298,7 @@ export class RsimzoClient {
   }
 
   async auth(options: RsAuthOptions) {
-    const signWindow = await this.openWindow(this.buildUrl(this.authPath, options.locale), 'RsImzoAuth', 320, 420)
+    const signWindow = await this.openWindow(this.buildUrl(this.authPath, options.locale), 320, 420)
 
     const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
       const interval = setInterval(() => {
