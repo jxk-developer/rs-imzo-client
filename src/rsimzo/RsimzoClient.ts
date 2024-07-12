@@ -14,8 +14,8 @@ Error codes
 */
 
 export class RsimzoClient {
-  private readonly targetOrigin = 'http://localhost:3030'
-  // private readonly targetOrigin = 'https://rs-imzo.uz'
+  // private readonly targetOrigin = 'http://localhost:3030'
+  private readonly targetOrigin = 'https://rs-imzo.uz'
   // private isServer: boolean
   private availableLocales = ['ru', 'uz', 'en', 'uz-kr']
 
