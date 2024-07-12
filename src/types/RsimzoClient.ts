@@ -28,7 +28,6 @@ export interface RsAuthOptions {
 export interface RsCertificate {
   pin?: string
   tin?: string
-  address: string
   country: string
   expireAt: number
   expireFrom: number
@@ -59,7 +58,8 @@ export interface RsPostMessageError {
   rawError?: any
 }
 
-export interface RsHandshakeOptions {
-  retryDelay?: number
-  timeout?: number
+export interface BuildUrlOptions {
+  path: string
+  params?: Record<string, string>
+  query?: Record<string, string>
 }
