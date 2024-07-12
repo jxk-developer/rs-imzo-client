@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.22
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.21...v0.0.22)
+
+### 💅 Refactors
+
+- Rewrite call functions ([b510563](https://github.com/jxk-developer/rs-imzo-client/commit/b510563))
+
+### 🏡 Chore
+
+- **release:** V0.0.21 ([f9586f3](https://github.com/jxk-developer/rs-imzo-client/commit/f9586f3))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.21
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.20...v0.0.21)
