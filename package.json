@@ -26,6 +26,8 @@
     "release": "npx changelogen@latest --release"
   },
   "devDependencies": {
+    "@types/node": "^20.14.11",
+    "@vitejs/plugin-vue": "^5.0.5",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   },

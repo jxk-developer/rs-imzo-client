@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import dts from "vite-plugin-dts";
+import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   resolve: {
@@ -13,9 +13,22 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/main.ts'),
       name: 'RsImzoClient',
       formats: ['cjs', 'es', 'umd'],
+      fileName: (format) => `rs-imzo-client.${format}.js`
+    },
+    rollupOptions: {
+      output: {
+        globals: {
+          vue: 'Vue'
+        }
+      }
     }
   },
   plugins: [
     dts({ insertTypesEntry: true })
-  ]
+  ],
+  esbuild: {
+    loader: 'ts',
+    include: /src\/.*\.[tj]s$/,
+    exclude: [],
+  }
 })
