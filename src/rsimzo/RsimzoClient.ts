@@ -5,17 +5,18 @@ import { BuildUrlOptions, RsPostMessageResult, RsOptions, RsSignOptions, RsCerti
 
 /*
 Error codes
+13 - Incorrect password
 10001 - Window closed
 10002 - Fetch token error
 10003 - Action completed with no result
 10004 - Certificate not found
 10005 - Invalid token
-10006 - Invalid parameters received on new window
+10006 - Invalid parameters received on opened window
 */
 
 export class RsimzoClient {
-  // private readonly targetOrigin = 'http://localhost:3030'
-  private readonly targetOrigin = 'https://rs-imzo.uz'
+  private readonly targetOrigin = 'http://localhost:3030'
+  // private readonly targetOrigin = 'https://rs-imzo.uz'
   // private isServer: boolean
   private availableLocales = ['ru', 'uz', 'en', 'uz-kr']
 
@@ -272,6 +273,12 @@ export class RsimzoClient {
   }
 
   async sign(serialNumber: string, content: string, options?: RsSignOptions) {
+    let opts: RsSignOptions = {
+      locale: this.options.locale,
+      attached: true
+    }
+
+    opts = defu(options, opts)
 
     const { data: token, error } = await this.fetchToken()
 
@@ -279,13 +286,13 @@ export class RsimzoClient {
 
     const url = this.buildUrl({
       path: ':locale/provider/sign',
-      params: { locale: options?.locale || this.options.locale! },
+      params: { locale: opts.locale! },
       query: {
         act: token!,
         parent: encodeURIComponent(window.location.origin),
         serialNumber,
         content,
-        ...(options?.attached && { contentMode: 'attached' })
+        ...(opts?.attached && { contentMode: 'attached' })
       }
     })
 
