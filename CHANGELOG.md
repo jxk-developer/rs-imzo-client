@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.24
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.23...v0.0.24)
+
+### 🩹 Fixes
+
+- Set default value of sign method ([1d239b1](https://github.com/jxk-developer/rs-imzo-client/commit/1d239b1))
+
+### 🏡 Chore
+
+- **release:** V0.0.23 ([c3f1568](https://github.com/jxk-developer/rs-imzo-client/commit/c3f1568))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.23
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.22...v0.0.23)
