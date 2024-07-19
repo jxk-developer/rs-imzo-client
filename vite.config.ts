@@ -13,7 +13,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/main.ts'),
       name: 'RsImzoClient',
       formats: ['cjs', 'es', 'umd'],
-      fileName: (format) => `rs-imzo-client.${format}.js`
+      // fileName: (format) => `rs-imzo-client.${format}.js`
     },
     rollupOptions: {
       output: {
