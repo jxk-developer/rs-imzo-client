@@ -136,13 +136,14 @@ export class RsimzoClient {
   }
 
   private getStoragePrefix(): string {
-    if (typeof this.options.storage === 'boolean' && this.options.storage) {
-      return 'rs.';
+    if (typeof this.options.storage === 'boolean') {
+      return this.options.storage ? 'rs.' : '';
     } else if (typeof this.options.storage === 'object') {
-      return this.options.storage.prefix ?? 'rs.';
+      return this.options.storage.prefix !== undefined ? this.options.storage.prefix : 'rs.';
     }
     return '';
   }
+
 
   private isLocalStorageEnabled(): boolean {
     if (typeof this.options.storage === 'boolean') {
