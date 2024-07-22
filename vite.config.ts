@@ -30,5 +30,6 @@ export default defineConfig({
     loader: 'ts',
     include: /src\/.*\.[tj]s$/,
     exclude: [],
+    target: 'es2015'
   }
 })
