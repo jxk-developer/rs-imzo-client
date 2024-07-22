@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.26
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.25...v0.0.26)
+
+### 💅 Refactors
+
+- Change target origini ([9830eeb](https://github.com/jxk-developer/rs-imzo-client/commit/9830eeb))
+
+### 🏡 Chore
+
+- **release:** V0.0.25 ([40fab3f](https://github.com/jxk-developer/rs-imzo-client/commit/40fab3f))
+- Update config ([bdf3071](https://github.com/jxk-developer/rs-imzo-client/commit/bdf3071))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.25
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.24...v0.0.25)
