@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.27
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.26...v0.0.27)
+
+### 💅 Refactors
+
+- Change getStoragePrefix ([2adbc3c](https://github.com/jxk-developer/rs-imzo-client/commit/2adbc3c))
+
+### 🏡 Chore
+
+- **release:** V0.0.26 ([024b3c8](https://github.com/jxk-developer/rs-imzo-client/commit/024b3c8))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.26
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.25...v0.0.26)
