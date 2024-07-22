@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.28
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.27...v0.0.28)
+
+### 🏡 Chore
+
+- **release:** V0.0.27 ([6a97067](https://github.com/jxk-developer/rs-imzo-client/commit/6a97067))
+- Support for es2015 ([e0b6f88](https://github.com/jxk-developer/rs-imzo-client/commit/e0b6f88))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.27
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.26...v0.0.27)
