@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v0.0.31
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.30...v0.0.31)
+
 ## v0.0.30
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.28...v0.0.30)
