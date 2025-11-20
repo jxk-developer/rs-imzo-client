@@ -1,4 +1,0 @@
-packages:
-  - playground
-overrides:
-  rsimzo-client: link:../../../Library/pnpm/global/5/node_modules/rsimzo-client
