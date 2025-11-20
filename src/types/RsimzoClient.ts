@@ -1,19 +1,9 @@
 export type RsAction = 'signature_list' | 'sign' | 'ready' | 'parse_pkcs7' | 'certificates_info' | 'auth'
+export type Locale = 'ru' | 'en' | 'uz'
 
 export interface RsOptions {
-  baseURL?: string
-  locale?: string
-  instantCertsFetch: boolean
-  paths: {
-    fetchToken: string
-  }
-  storage?: boolean | RsStorageOptions
-  headers?: Record<string, string>
-}
-
-export interface RsStorageOptions {
-  prefix?: string
-  localStorage?: boolean
+  locale?: Locale
+  publicKey: string
 }
 
 export interface RsSignOptions {
@@ -22,6 +12,10 @@ export interface RsSignOptions {
 }
 
 export interface RsAuthOptions {
+  locale?: string
+}
+
+export interface RsCertificatesOptions {
   locale?: string
 }
 

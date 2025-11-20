@@ -9,17 +9,18 @@ export default defineConfig({
     }
   },
   build: {
+    target: 'es2015',
     lib: {
       entry: resolve(__dirname, 'src/main.ts'),
       name: 'RsImzoClient',
       formats: ['cjs', 'es', 'umd'],
-      // fileName: (format) => `rs-imzo-client.${format}.js`
+      fileName: (format) => `rsimzo-client.${format}.js`
     },
     rollupOptions: {
       output: {
-        globals: {
-          vue: 'Vue'
-        }
+        // globals: {
+        //   vue: 'Vue'
+        // }
       }
     }
   },
@@ -30,6 +31,10 @@ export default defineConfig({
     loader: 'ts',
     include: /src\/.*\.[tj]s$/,
     exclude: [],
-    target: 'es2015'
+    target: 'es6',
+
+    minifyIdentifiers: false,
+    minifySyntax: false,
+    minifyWhitespace: true
   }
 })

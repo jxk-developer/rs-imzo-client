@@ -1,7 +1,5 @@
 import { defu } from "defu";
-import { destr } from "destr";
-import { $Fetch, ofetch, FetchError } from "ofetch";
-import { BuildUrlOptions, RsPostMessageResult, RsOptions, RsSignOptions, RsCertificate, RsAuthOptions } from '~/types'
+import { BuildUrlOptions, RsPostMessageResult, RsOptions, RsSignOptions, Locale, RsAuthOptions, RsCertificatesOptions } from '~/types'
 
 /*
 Error codes
@@ -15,85 +13,38 @@ Error codes
 */
 
 export class RsimzoClient {
-  // private readonly targetOrigin = 'http://localhost:3030'
-  private readonly targetOrigin = 'https://rs-imzo.uz'
-  // private isServer: boolean
-  private availableLocales = ['ru', 'uz', 'en', 'uz-kr']
-
-  private $fetch: $Fetch
+  private readonly targetOrigin = 'http://localhost:3020'
+  // private readonly targetOrigin = 'https://rs-imzo.uz'
+  private defaultLocale: Locale = 'uz'
 
   private options: RsOptions = {
-    baseURL: '',
-    locale: 'en',
-    paths: {
-      fetchToken: ''
-    },
-    storage: true,
-    instantCertsFetch: false,
-    headers: {}
+    locale: this.defaultLocale,
+    publicKey: ''
   }
 
-  constructor(options?: RsOptions) {
-    // this.isServer = typeof window === 'undefined'
+  constructor(options: RsOptions) {
+    if (!options.publicKey) {
+      throw new Error('Please provide public key')
+    }
     this.options = defu(options, this.options)
 
     this.options.locale = this.getValidatedLocale(this.options.locale!)
-
-    this.$fetch = ofetch.create({ baseURL: this.options.baseURL || window.location.origin, headers: options?.headers });
   }
 
-  get certificates(): RsCertificate[] {
-    return destr<RsCertificate[]>(this.getFromLocalStorage('certificates')) || [];
-  }
-
-  private getValidatedLocale(locale: string) {
-    if (!this.availableLocales.includes(locale)) {
-      console.warn(`Invalid locale '${this.options.locale}'. Defaulting to 'en'.`);
-      return 'en';
+  private getValidatedLocale(locale: Locale) {
+    if (!['ru', 'uz', 'en'].includes(locale)) {
+      console.warn(`Invalid locale '${this.options.locale}'. Defaulting to '${this.defaultLocale}'.`);
+      return this.defaultLocale
     }
 
     return locale
   }
 
-  // private async callMethod<T>({ method, data, targetWindow }: RsCallMethod): Promise<RsPostMessageResult<T>> {
-  //   if (this.isServer || !targetWindow) {
-  //     console.error('callMethod: Environment or target window not available.')
-  //     return { data: null, error: null }
-  //   }
-
-  //   return new Promise((resolve) => {
-  //     try {
-  //       const channel = new MessageChannel()
-  //       channel.port1.onmessage = (event: MessageEvent<RsPostMessageResult<T>>) => {
-  //         if (!event.data) {
-  //           return resolve({ data: null, error: { errorCode: 10003, errorMessage: 'Action completed with no result' } })
-  //         }
-
-  //         if (!event.data.success) {
-  //           return resolve({ data: null, error: event.data.error })
-  //         }
-
-  //         return resolve(event.data)
-  //       }
-
-  //       const postData = {
-  //         method,
-  //         ...(data && { data })
-  //       }
-
-  //       targetWindow.postMessage(postData, this.targetOrigin, [channel.port2])
-  //     } catch (e) {
-  //       console.error('callMethod error: ', e)
-  //       resolve({ data: null, error: null })
-  //     }
-  //   })
-  // }
-
   private async openWindow(url: string | URL, title: string, w: number, h: number): Promise<Window> {
     const left = (screen.width / 2) - (w / 2) + window.screenLeft
     const top = (screen.height * 0.2) + window.screenTop
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       try {
         const newWindow = window.open(url, title, `
           width=${w},
@@ -104,30 +55,13 @@ export class RsimzoClient {
           resizable=no`)
 
         if (!newWindow) {
-          console.error('newWindow is not initialized')
-          return reject(new Error('newWindow is not initialized'))
+          return reject({
+            data: null,
+            error: { errorCode: 10009, errorMessage: 'Popup blocked' }
+          })
         }
 
         resolve(newWindow)
-        return
-        const checkIfLoaded = setInterval(() => {
-          if (newWindow && newWindow.closed) {
-            //'Child window closed before loading'
-            clearInterval(checkIfLoaded);
-            return;
-          }
-          try {
-            // todo find new way of check if loaded
-            if (newWindow && newWindow.document && newWindow.document.readyState === 'complete') {
-              clearInterval(checkIfLoaded);
-              newWindow.focus()
-              resolve(newWindow)
-            }
-          } catch (e) {
-            // Catch and handle cross-origin access errors
-            console.log(e, 'checkIfLoaded error');
-          }
-        }, 200);
 
       } catch (e) {
         reject(new Error(`openWindow err ${e}`))
@@ -135,29 +69,11 @@ export class RsimzoClient {
     })
   }
 
-  private getStoragePrefix(): string {
-    if (typeof this.options.storage === 'boolean' && this.options.storage) {
-      return 'rs.';
-    } else if (typeof this.options.storage === 'object') {
-      return this.options.storage.prefix ?? 'rs.';
-    }
-    return '';
-  }
-
-  private isLocalStorageEnabled(): boolean {
-    if (typeof this.options.storage === 'boolean') {
-      return this.options.storage;
-    } else if (typeof this.options.storage === 'object') {
-      return this.options.storage.localStorage ?? true;
-    }
-    return false;
-  }
-
   private buildUrl({ path, params = {}, query = {} }: BuildUrlOptions): string {
     let constructedPath = path;
     for (const key in params) {
       const value = params[key];
-      constructedPath = constructedPath.replace(`:${key}`, value);
+      constructedPath = constructedPath.replace(`{${key}}`, value);
     }
 
     const queryString = new URLSearchParams(query).toString();
@@ -166,198 +82,70 @@ export class RsimzoClient {
     return queryString ? `${url}?${queryString}` : url;
   }
 
-  private async fetchToken() {
-    try {
-      const res = await this.$fetch<{ token: string }>(this.options.paths.fetchToken)
-      return { data: res.token, error: null }
-    } catch (error) {
-      const err = error as any as FetchError
-      console.log(err, 'err');
-
-      return Promise.resolve({ data: null, error: { errorCode: 10002, errorMessage: 'Fetch token error', rawError: err.response?._data } } as RsPostMessageResult<null>)
-    }
-  }
-
-  async getCertificates(options: Partial<Pick<RsOptions, 'locale' | 'instantCertsFetch'>>) {
-
-    const { data: token, error } = await this.fetchToken()
-
-    if (error) { return { data: null, error } }
-
-    let query: Record<string, string> = {
-      act: token!,
-      parent: encodeURIComponent(window.location.origin)
-    }
-
-    if (options.instantCertsFetch) {
-      query['fetch'] = 'instant'
-    }
+  async getCertificates(options?: RsCertificatesOptions) {
 
     const url = this.buildUrl({
-      path: ':locale/provider/certs',
-      params: { locale: options?.locale || this.options.locale! },
-      query: {
-        act: token!,
-        parent: encodeURIComponent(window.location.origin),
-        ...(options.instantCertsFetch && { fetch: 'instant' }),
-      }
+      path: '{locale}/provider/signatures',
+      params: { locale: options?.locale || this.options.locale! }
     })
 
-    const certsWindow = await this.openWindow(url, 'RsImzoCerts', 320, 420)
-    console.log(certsWindow, 'certsWindow');
+    const publicToken = this.options.publicKey
+    const targetOrigin = this.targetOrigin
 
-    let intervalId: number | undefined;
-    const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
-      intervalId = window.setInterval(() => {
-        if (certsWindow.closed) {
-          clearInterval(intervalId);
-          return resolve({
-            data: null,
-            error: { errorCode: 10001, errorMessage: 'window closed' }
-          } as RsPostMessageResult<null>);
+    const iframe = document.createElement('iframe')
+    iframe.src = url
+    iframe.style.display = 'none'
+
+    document.body.appendChild(iframe)
+
+    function waitForIframeLoad(iframe: HTMLIFrameElement): Promise<HTMLIFrameElement> {
+      return new Promise(resolve => {
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow?.document
+          console.log(doc?.readyState, 'doc?.readyState')
+          if (doc?.readyState === 'complete') {
+            resolve(iframe)
+            return
+          }
+        } catch (err) {
+          // cross-origin, cannot read contentDocument — fallback to load event
         }
-      }, 500);
-    });
+
+        iframe.addEventListener('DOMContentLoaded', () => resolve(iframe), { once: true })
+      })
+    }
 
     let eventListener: (event: MessageEvent<any>) => void = () => { }
-
-    const resultPromise: Promise<RsPostMessageResult<RsCertificate[]>> = new Promise((resolve) => {
-      eventListener = (event: MessageEvent<any>) => {
-        console.log(event, 'event');
-
-        if (event.origin !== this.targetOrigin) {
-          // Ensure the message is coming from the expected origin
-          console.warn('Received message from unexpected origin:', event.origin);
-          return;
+    async function requestCertificates() {
+      await waitForIframeLoad(iframe)
+      return new Promise(resolve => {
+        eventListener = (_event) => {
+          if (_event.data.type === 'ready') {
+            iframe.contentWindow!.postMessage({ type: 'certificates', public: publicToken }, targetOrigin)
+          } else {
+            iframe.remove()
+            window.removeEventListener('message', eventListener);
+            resolve(_event.data)
+          }
         }
-        resolve(event.data as RsPostMessageResult<RsCertificate[]>);
-      };
-
-      window.addEventListener('message', eventListener);
-    });
-    // Wait for either the window to close or the data to be returned
-    const result = await Promise.race([windowClosedPromise, resultPromise])
-
-    // Ensure the signWindow is closed
-    if (!certsWindow.closed) {
-      certsWindow.close()
+        window.addEventListener('message', eventListener)
+      })
     }
 
-    if (result.data) {
-      this.saveToLocalStorage('certificates', JSON.stringify(result.data))
-    }
+    return await requestCertificates()
 
-    // Clean up interval and event listener
-    if (intervalId !== undefined) {
-      clearInterval(intervalId);
-    }
-
-    window.removeEventListener('message', eventListener);
-
-    return result
-  }
-
-  saveToLocalStorage(key: string, value: string) {
-    const prefix = this.getStoragePrefix();
-    if (this.isLocalStorageEnabled() && prefix) {
-      localStorage.setItem(`${prefix}${key}`, value);
-    }
-  }
-
-  getFromLocalStorage(key: string): string | null {
-    const prefix = this.getStoragePrefix();
-    if (this.isLocalStorageEnabled() && prefix) {
-      return localStorage.getItem(`${prefix}${key}`);
-    }
-    return null;
   }
 
   async sign(serialNumber: string, content: string, options?: RsSignOptions) {
-    let opts: RsSignOptions = {
-      locale: this.options.locale,
-      attached: true
-    }
-
-    opts = defu(options, opts)
-
-    const { data: token, error } = await this.fetchToken()
-
-    if (error) { return { data: null, error } }
 
     const url = this.buildUrl({
-      path: ':locale/provider/sign',
-      params: { locale: opts.locale! },
-      query: {
-        act: token!,
-        parent: encodeURIComponent(window.location.origin),
-        serialNumber,
-        content,
-        ...(opts?.attached && { contentMode: 'attached' })
-      }
-    })
-
-    const signWindow = await this.openWindow(url, 'RsImzoSign', 280, 320)
-
-    let intervalId: number | undefined;
-    const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
-      intervalId = window.setInterval(() => {
-        if (signWindow.closed) {
-          clearInterval(intervalId);
-          return resolve({
-            data: null,
-            error: { errorCode: 10001, errorMessage: 'window closed' }
-          } as RsPostMessageResult<null>);
-        }
-      }, 500);
-    });
-
-
-    let eventListener: (event: MessageEvent<any>) => void = () => { }
-
-    const resultPromise: Promise<RsPostMessageResult<string>> = new Promise((resolve) => {
-      eventListener = (event: MessageEvent<any>) => {
-        if (event.origin !== this.targetOrigin) {
-          // Ensure the message is coming from the expected origin
-          console.warn('Received message from unexpected origin:', event.origin);
-          return;
-        }
-        resolve(event.data as RsPostMessageResult<string>);
-      };
-
-      window.addEventListener('message', eventListener);
-    });
-
-    // Wait for either the window to close or the data to be returned
-    const result = await Promise.race([windowClosedPromise, resultPromise])
-
-    // Ensure the authWindow is closed
-    if (!signWindow.closed) {
-      signWindow.close()
-    }
-
-    // Clean up interval and event listener
-    if (intervalId !== undefined) {
-      clearInterval(intervalId);
-    }
-
-    window.removeEventListener('message', eventListener);
-
-    return result
-  }
-
-  async auth(options?: RsAuthOptions) {
-
-    const { data: token, error } = await this.fetchToken()
-
-    if (error) { return { data: null, error } }
-
-    const url = this.buildUrl({
-      path: ':locale/provider/auth',
+      path: '{locale}/provider/sign',
       params: { locale: options?.locale || this.options.locale! },
-      query: { act: token!, parent: encodeURIComponent(window.location.origin) }
+      query: { publicKey: this.options.publicKey }
     })
 
-    const authWindow = await this.openWindow(url, 'RsImzoAuth', 320, 420)
+    const targetOrigin = this.targetOrigin
+    const authWindow = await this.openWindow(url, 'RsImzoSign', 500, 660)
 
     let intervalId: number | undefined;
     const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
@@ -381,14 +169,89 @@ export class RsimzoClient {
           console.warn('Received message from unexpected origin:', event.origin);
           return;
         }
-        resolve(event.data as RsPostMessageResult<string>);
+
+        if (event.data.type === 'auth_ready') {
+          authWindow.postMessage({ type: 'validate', serialNumber, content }, targetOrigin)
+        } else {
+          resolve(event.data as RsPostMessageResult<string>);
+        }
       };
 
       window.addEventListener('message', eventListener);
     });
 
+    const timeout: Promise<RsPostMessageResult<null>> = new Promise(resolve => setTimeout(() => {
+      resolve({ data: null, error: { errorCode: 10008, errorMessage: 'Timeout' } })
+    }, 60000))
+
     // Wait for either the window to close or the data to be returned
-    const result = await Promise.race([windowClosedPromise, resultPromise])
+    const result = await Promise.race([windowClosedPromise, resultPromise, timeout])
+
+    // Ensure the authWindow is closed
+    if (!authWindow.closed) {
+      authWindow.close()
+    }
+
+    // Clean up interval and event listener
+    if (intervalId !== undefined) {
+      clearInterval(intervalId);
+    }
+
+    window.removeEventListener('message', eventListener);
+
+    return result
+  }
+
+  async auth(options?: RsAuthOptions) {
+
+    const url = this.buildUrl({
+      path: '{locale}/provider/auth',
+      params: { locale: options?.locale || this.options.locale! },
+      query: { publicKey: this.options.publicKey }
+    })
+
+    const targetOrigin = this.targetOrigin
+    const authWindow = await this.openWindow(url, 'RsImzoAuth', 500, 660)
+
+    let intervalId: number | undefined;
+    const windowClosedPromise: Promise<RsPostMessageResult<null>> = new Promise((resolve) => {
+      intervalId = window.setInterval(() => {
+        if (authWindow.closed) {
+          clearInterval(intervalId);
+          return resolve({
+            data: null,
+            error: { errorCode: 10001, errorMessage: 'window closed' }
+          } as RsPostMessageResult<null>);
+        }
+      }, 500);
+    });
+
+    let eventListener: (event: MessageEvent<any>) => void = () => { }
+
+    const resultPromise: Promise<RsPostMessageResult<string>> = new Promise((resolve) => {
+      eventListener = (event: MessageEvent<any>) => {
+        if (event.origin !== this.targetOrigin) {
+          // Ensure the message is coming from the expected origin
+          console.warn('Received message from unexpected origin:', event.origin);
+          return;
+        }
+
+        if (event.data.type === 'auth_ready') {
+          authWindow.postMessage({ type: 'validate' }, targetOrigin)
+        } else {
+          resolve(event.data as RsPostMessageResult<string>);
+        }
+      };
+
+      window.addEventListener('message', eventListener);
+    });
+
+    const timeout: Promise<RsPostMessageResult<null>> = new Promise(resolve => setTimeout(() => {
+      resolve({ data: null, error: { errorCode: 10008, errorMessage: 'Timeout' } })
+    }, 60000))
+
+    // Wait for either the window to close or the data to be returned
+    const result = await Promise.race([windowClosedPromise, resultPromise, timeout])
 
     // Ensure the authWindow is closed
     if (!authWindow.closed) {
