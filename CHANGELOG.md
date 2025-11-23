@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.0.36
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.34...v0.0.36)
+
+### 💅 Refactors
+
+- Transfer type to root index ([e3e12bc](https://github.com/jxk-developer/rs-imzo-client/commit/e3e12bc))
+- Update options ([59b4252](https://github.com/jxk-developer/rs-imzo-client/commit/59b4252))
+
+### 🏡 Chore
+
+- **release:** V0.0.34 ([1df983a](https://github.com/jxk-developer/rs-imzo-client/commit/1df983a))
+- **release:** V0.0.35 ([8cdc5fd](https://github.com/jxk-developer/rs-imzo-client/commit/8cdc5fd))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.35
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.34...v0.0.35)
