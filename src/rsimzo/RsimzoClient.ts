@@ -1,5 +1,5 @@
 import { defu } from "defu";
-import { BuildUrlOptions, RsPostMessageResult, RsOptions, RsSignOptions, Locale, RsAuthOptions, RsCertificatesOptions } from '~/types'
+import { BuildUrlOptions, RsPostMessageResult, RsOptions, RsSignOptions, Locale, RsAuthOptions, RsCertificatesOptions, RsSignatureInfo, RsResolvedOptions } from '~/types'
 
 /*
 Error codes
@@ -13,13 +13,12 @@ Error codes
 */
 
 export class RsimzoClient {
-  private readonly targetOrigin = 'http://localhost:3020'
-  // private readonly targetOrigin = 'https://rs-imzo.uz'
   private defaultLocale: Locale = 'uz'
 
-  private options: RsOptions = {
+  private options: RsResolvedOptions = {
     locale: this.defaultLocale,
-    publicKey: ''
+    publicKey: '' as string,
+    targetOrigin: 'https://rs-imzo.uz'
   }
 
   constructor(options: RsOptions) {
@@ -28,7 +27,7 @@ export class RsimzoClient {
     }
     this.options = defu(options, this.options)
 
-    this.options.locale = this.getValidatedLocale(this.options.locale!)
+    this.options.locale = this.getValidatedLocale(this.options.locale)
   }
 
   private getValidatedLocale(locale: Locale) {
@@ -78,19 +77,19 @@ export class RsimzoClient {
 
     const queryString = new URLSearchParams(query).toString();
 
-    const url = `${this.targetOrigin}/${constructedPath}`;
+    const url = `${this.options.targetOrigin}/${constructedPath}`;
     return queryString ? `${url}?${queryString}` : url;
   }
 
-  async getCertificates(options?: RsCertificatesOptions) {
+  async getCertificates(options?: RsCertificatesOptions): Promise<RsPostMessageResult<RsSignatureInfo[]>> {
 
     const url = this.buildUrl({
       path: '{locale}/provider/signatures',
       params: { locale: options?.locale || this.options.locale! }
     })
 
-    const publicToken = this.options.publicKey
-    const targetOrigin = this.targetOrigin
+    const publicKey = this.options.publicKey
+    const targetOrigin = this.options.targetOrigin
 
     const iframe = document.createElement('iframe')
     iframe.src = url
@@ -102,7 +101,6 @@ export class RsimzoClient {
       return new Promise(resolve => {
         try {
           const doc = iframe.contentDocument || iframe.contentWindow?.document
-          console.log(doc?.readyState, 'doc?.readyState')
           if (doc?.readyState === 'complete') {
             resolve(iframe)
             return
@@ -116,12 +114,12 @@ export class RsimzoClient {
     }
 
     let eventListener: (event: MessageEvent<any>) => void = () => { }
-    async function requestCertificates() {
+    async function requestCertificates(): Promise<RsPostMessageResult<RsSignatureInfo[]>> {
       await waitForIframeLoad(iframe)
       return new Promise(resolve => {
         eventListener = (_event) => {
           if (_event.data.type === 'ready') {
-            iframe.contentWindow!.postMessage({ type: 'certificates', public: publicToken }, targetOrigin)
+            iframe.contentWindow!.postMessage({ type: 'certificates', publicKey }, targetOrigin)
           } else {
             iframe.remove()
             window.removeEventListener('message', eventListener);
@@ -136,15 +134,14 @@ export class RsimzoClient {
 
   }
 
-  async sign(serialNumber: string, content: string, options?: RsSignOptions) {
-
+  async sign(serialNumber: string, content: string, options?: RsSignOptions): Promise<RsPostMessageResult<string | null>> {
     const url = this.buildUrl({
       path: '{locale}/provider/sign',
       params: { locale: options?.locale || this.options.locale! },
       query: { publicKey: this.options.publicKey }
     })
 
-    const targetOrigin = this.targetOrigin
+    const targetOrigin = this.options.targetOrigin
     const authWindow = await this.openWindow(url, 'RsImzoSign', 500, 660)
 
     let intervalId: number | undefined;
@@ -164,7 +161,7 @@ export class RsimzoClient {
 
     const resultPromise: Promise<RsPostMessageResult<string>> = new Promise((resolve) => {
       eventListener = (event: MessageEvent<any>) => {
-        if (event.origin !== this.targetOrigin) {
+        if (event.origin !== this.options.targetOrigin) {
           // Ensure the message is coming from the expected origin
           console.warn('Received message from unexpected origin:', event.origin);
           return;
@@ -202,15 +199,14 @@ export class RsimzoClient {
     return result
   }
 
-  async auth(options?: RsAuthOptions) {
-
+  async auth(options?: RsAuthOptions): Promise<RsPostMessageResult<string | null>> {
     const url = this.buildUrl({
       path: '{locale}/provider/auth',
       params: { locale: options?.locale || this.options.locale! },
       query: { publicKey: this.options.publicKey }
     })
 
-    const targetOrigin = this.targetOrigin
+    const targetOrigin = this.options.targetOrigin
     const authWindow = await this.openWindow(url, 'RsImzoAuth', 500, 660)
 
     let intervalId: number | undefined;
@@ -230,7 +226,7 @@ export class RsimzoClient {
 
     const resultPromise: Promise<RsPostMessageResult<string>> = new Promise((resolve) => {
       eventListener = (event: MessageEvent<any>) => {
-        if (event.origin !== this.targetOrigin) {
+        if (event.origin !== this.options.targetOrigin) {
           // Ensure the message is coming from the expected origin
           console.warn('Received message from unexpected origin:', event.origin);
           return;
