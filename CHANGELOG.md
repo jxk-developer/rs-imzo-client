@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.44
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.43...v0.0.44)
+
+### 🏡 Chore
+
+- **release:** V0.0.43 ([6824fe2](https://github.com/jxk-developer/rs-imzo-client/commit/6824fe2))
+- Update tsconfig ([66b50dd](https://github.com/jxk-developer/rs-imzo-client/commit/66b50dd))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.43
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.42...v0.0.43)
