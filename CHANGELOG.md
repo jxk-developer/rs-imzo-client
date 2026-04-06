@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.47
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.46...v0.0.47)
+
+### 🩹 Fixes
+
+- Remove breacking error ([1baf78c](https://github.com/jxk-developer/rs-imzo-client/commit/1baf78c))
+
+### 🏡 Chore
+
+- **release:** V0.0.46 ([dfcf403](https://github.com/jxk-developer/rs-imzo-client/commit/dfcf403))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.46
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.45...v0.0.46)
