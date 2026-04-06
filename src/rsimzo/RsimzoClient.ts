@@ -32,6 +32,10 @@ export class RsimzoClient {
   private certificatesCache: RsSignatureInfo[] | null = null;
 
   constructor(options: RsOptions) {
+    if (!options.publicKey) {
+      throw new Error("Please provide a public key");
+    }
+
     this.options = defu(options, {
       locale: this.defaultLocale,
       publicKey: "",
@@ -47,7 +51,7 @@ export class RsimzoClient {
 
   async getCertificates(
     options?: RsCertificatesOptions
-  ): Promise<RsPostMessageResult<RsSignatureInfo[]>> {
+  ): Promise<RsPostMessageResult<RsSignatureInfo[] | null>> {
     if (this.certificatesCache) {
       return { data: this.certificatesCache, error: null };
     }
@@ -62,12 +66,21 @@ export class RsimzoClient {
     iframe.style.display = "none";
     document.body.appendChild(iframe);
 
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let messageHandler: ((e: MessageEvent) => void) | undefined;
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      if (messageHandler) window.removeEventListener("message", messageHandler);
+      iframe.remove();
+    };
+
     try {
       await this.waitForIframeLoad(iframe);
 
-      return await new Promise<RsPostMessageResult<RsSignatureInfo[]>>(
+      const resultPromise = new Promise<RsPostMessageResult<RsSignatureInfo[]>>(
         (resolve) => {
-          const handler = (event: MessageEvent) => {
+          messageHandler = (event: MessageEvent) => {
             if (event.origin !== this.options.targetOrigin) return;
 
             if (event.data?.type === "ready") {
@@ -76,7 +89,6 @@ export class RsimzoClient {
                 this.options.targetOrigin
               );
             } else {
-              window.removeEventListener("message", handler);
               if (event.data?.data) {
                 this.certificatesCache = event.data.data;
               }
@@ -84,11 +96,19 @@ export class RsimzoClient {
             }
           };
 
-          window.addEventListener("message", handler);
+          window.addEventListener("message", messageHandler);
         }
       );
+
+      const timeoutPromise = new Promise<RsPostMessageResult<null>>((resolve) => {
+        timeoutId = setTimeout(() => {
+          resolve({ data: null, error: { errorCode: 10008, errorMessage: "Timeout" } });
+        }, 60_000);
+      });
+
+      return await Promise.race([resultPromise, timeoutPromise]);
     } finally {
-      iframe.remove();
+      cleanup();
     }
   }
 
