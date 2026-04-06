@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.38
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.36...v0.0.38)
+
+### 💅 Refactors
+
+- Fully refactor code ([dde47e2](https://github.com/jxk-developer/rs-imzo-client/commit/dde47e2))
+
+### 🏡 Chore
+
+- **release:** V0.0.36 ([877198d](https://github.com/jxk-developer/rs-imzo-client/commit/877198d))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.36
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.34...v0.0.36)
