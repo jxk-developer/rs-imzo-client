@@ -32,10 +32,6 @@ export class RsimzoClient {
   private certificatesCache: RsSignatureInfo[] | null = null;
 
   constructor(options: RsOptions) {
-    if (!options.publicKey) {
-      throw new Error("Please provide a public key");
-    }
-
     this.options = defu(options, {
       locale: this.defaultLocale,
       publicKey: "",
