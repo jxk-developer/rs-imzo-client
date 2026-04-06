@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.42
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.41...v0.0.42)
+
+### 🩹 Fixes
+
+- Add timeout on certs fetch ([e44c670](https://github.com/jxk-developer/rs-imzo-client/commit/e44c670))
+
+### 🏡 Chore
+
+- **release:** V0.0.41 ([2022dd8](https://github.com/jxk-developer/rs-imzo-client/commit/2022dd8))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.41
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.38...v0.0.41)
