@@ -30,7 +30,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      insertTypesEntry: true,
+      // insertTypesEntry: true,
       outDir: 'dist',
       include: ['src'],
       rollupTypes: true,        // ← merges all types into one file
