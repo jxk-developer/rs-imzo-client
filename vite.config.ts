@@ -14,7 +14,11 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/main.ts'),
       name: 'RsImzoClient',
       formats: ['cjs', 'es', 'umd'],
-      fileName: (format) => `rsimzo-client.${format}.js`
+      fileName: (format) => {
+        if (format === 'cjs') return 'rsimzo.cjs'
+        if (format === 'es') return 'rsimzo.mjs'
+        return `rsimzo.${format}.js`  // umd
+      }
     },
     rollupOptions: {
       output: {
@@ -25,7 +29,17 @@ export default defineConfig({
     }
   },
   plugins: [
-    dts({ insertTypesEntry: true })
+    dts({
+      insertTypesEntry: true,
+      outDir: 'dist',
+      include: ['src'],
+      rollupTypes: true,        // ← merges all types into one file
+      tsconfigPath: './tsconfig.json',
+      compilerOptions: {
+        moduleResolution: 99, // ModuleResolutionKind.Node10
+        baseUrl: '.',
+      }
+    })
   ],
   esbuild: {
     loader: 'ts',

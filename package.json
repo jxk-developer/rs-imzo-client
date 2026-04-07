@@ -9,14 +9,14 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/rsimzo-client.cjs.js",
-  "module": "./dist/rsimzo-client.es.js",
-  "types": "./dist/main.d.ts",
+  "main": "./dist/rsimzo.cjs",
+  "module": "./dist/rsimzo.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/rsimzo-client.es.js",
-      "require": "./dist/rsimzo-client.cjs.js",
-      "types": "./dist/main.d.ts"
+      "import": "./dist/rsimzo.mjs",
+      "require": "./dist/rsimzo.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
