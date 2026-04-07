@@ -11,12 +11,12 @@
   ],
   "main": "./dist/rsimzo-client.cjs.js",
   "module": "./dist/rsimzo-client.es.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/main.d.ts",
   "exports": {
     ".": {
       "import": "./dist/rsimzo-client.es.js",
       "require": "./dist/rsimzo-client.cjs.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/main.d.ts"
     }
   },
   "scripts": {
