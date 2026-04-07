@@ -32,16 +32,16 @@ export default defineConfig({
     dts({
       // insertTypesEntry: true,
       outDir: 'dist',
-      include: ['src'],
+      // include: ['src'],
       rollupTypes: true,        // ← merges all types into one file
-      tsconfigPath: './tsconfig.json',
-      compilerOptions: {
-        moduleResolution: 100, // ModuleResolutionKind.Bundler
-        baseUrl: '.',
-        paths: {
-          '~/*': ['./src/*']  // keep alias working for dts
-        }
-      }
+      // tsconfigPath: './tsconfig.json',
+      // compilerOptions: {
+      //   moduleResolution: 100, // ModuleResolutionKind.Bundler
+      //   baseUrl: '.',
+      //   paths: {
+      //     '~/*': ['./src/*']  // keep alias working for dts
+      //   }
+      // }
     })
   ],
   esbuild: {
