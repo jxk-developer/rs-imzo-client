@@ -29,8 +29,6 @@ export class RsimzoClient {
 
   private readonly options: RsResolvedOptions;
 
-  private certificatesCache: RsSignatureInfo[] | null = null;
-
   constructor(options: RsOptions) {
     this.options = defu(options, {
       locale: this.defaultLocale,
@@ -48,10 +46,6 @@ export class RsimzoClient {
   async getCertificates(
     options?: RsCertificatesOptions
   ): Promise<RsPostMessageResult<RsSignatureInfo[] | null>> {
-    if (this.certificatesCache) {
-      return { data: this.certificatesCache, error: null };
-    }
-
     const url = this.buildUrl({
       path: "{locale}/provider/signatures",
       params: { locale: options?.locale ?? this.options.locale! },
@@ -85,9 +79,6 @@ export class RsimzoClient {
                 this.options.targetOrigin
               );
             } else {
-              if (event.data?.data) {
-                this.certificatesCache = event.data.data;
-              }
               resolve(event.data);
             }
           };
