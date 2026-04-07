@@ -36,8 +36,11 @@ export default defineConfig({
       rollupTypes: true,        // ← merges all types into one file
       tsconfigPath: './tsconfig.json',
       compilerOptions: {
-        moduleResolution: 99, // ModuleResolutionKind.Node10
+        moduleResolution: 100, // ModuleResolutionKind.Bundler
         baseUrl: '.',
+        paths: {
+          '~/*': ['./src/*']  // keep alias working for dts
+        }
       }
     })
   ],
