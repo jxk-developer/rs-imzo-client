@@ -3,6 +3,19 @@
 
 ## v0.0.50
 
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.50...v0.0.50)
+
+### 🏡 Chore
+
+- **release:** V0.0.50 ([cbf517f](https://github.com/jxk-developer/rs-imzo-client/commit/cbf517f))
+- 3 ([f6c4d54](https://github.com/jxk-developer/rs-imzo-client/commit/f6c4d54))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
+## v0.0.50
+
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.49...v0.0.50)
 
 ### 🏡 Chore
