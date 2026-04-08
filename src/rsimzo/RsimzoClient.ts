@@ -18,7 +18,7 @@ import {
   10002 - Fetch token error
   10003 - Action completed with no result
   10004 - Certificate not found
-  10005 - Invalid token
+  10005 - Failed to validate client origin
   10006 - Invalid parameters received on opened window
   10008 - Timeout
   10009 - Popup blocked
@@ -49,54 +49,12 @@ export class RsimzoClient {
     const url = this.buildUrl({
       path: "{locale}/provider/signatures",
       params: { locale: options?.locale ?? this.options.locale! },
+      query: { publicKey: this.options.publicKey },
     });
 
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-    let messageHandler: ((e: MessageEvent) => void) | undefined;
-
-    const cleanup = () => {
-      clearTimeout(timeoutId);
-      if (messageHandler) window.removeEventListener("message", messageHandler);
-      iframe.remove();
-    };
-
-    try {
-      await this.waitForIframeLoad(iframe);
-
-      const resultPromise = new Promise<RsPostMessageResult<RsSignatureInfo[]>>(
-        (resolve) => {
-          messageHandler = (event: MessageEvent) => {
-            if (event.origin !== this.options.targetOrigin) return;
-
-            if (event.data?.type === "ready") {
-              iframe.contentWindow!.postMessage(
-                { type: "certificates", publicKey: this.options.publicKey },
-                this.options.targetOrigin
-              );
-            } else {
-              resolve(event.data);
-            }
-          };
-
-          window.addEventListener("message", messageHandler);
-        }
-      );
-
-      const timeoutPromise = new Promise<RsPostMessageResult<null>>((resolve) => {
-        timeoutId = setTimeout(() => {
-          resolve({ data: null, error: { errorCode: 10008, errorMessage: "Timeout" } });
-        }, 60_000);
-      });
-
-      return await Promise.race([resultPromise, timeoutPromise]);
-    } finally {
-      cleanup();
-    }
+    return this.openWindowAndAwaitResult(url, "RsImzoCertificates", (win) => {
+      win.postMessage({ type: "validate" }, this.options.targetOrigin);
+    });
   }
 
   async sign(
@@ -137,11 +95,11 @@ export class RsimzoClient {
    * Shared logic for sign() and auth(): open a popup, wait for auth_ready,
    * send a payload, then race the result against window-close and timeout.
    */
-  private async openWindowAndAwaitResult(
+  private async openWindowAndAwaitResult<T>(
     url: string,
     title: string,
     sendPayload: (win: Window) => void
-  ): Promise<RsPostMessageResult<string | null>> {
+  ): Promise<RsPostMessageResult<T | null>> {
     const popup = await this.openWindow(url, title, 500, 660);
 
     let intervalId: ReturnType<typeof setInterval> | undefined;
@@ -155,20 +113,18 @@ export class RsimzoClient {
       if (!popup.closed) popup.close();
     };
 
-    const windowClosedPromise = new Promise<RsPostMessageResult<null>>(
-      (resolve) => {
-        intervalId = setInterval(() => {
-          if (popup.closed) {
-            resolve({
-              data: null,
-              error: { errorCode: 10001, errorMessage: "Window closed" },
-            });
-          }
-        }, 200);
-      }
-    );
+    const windowClosedPromise = new Promise<RsPostMessageResult<null>>((resolve) => {
+      intervalId = setInterval(() => {
+        if (popup.closed) {
+          resolve({
+            data: null,
+            error: { errorCode: 10001, errorMessage: "Window closed" },
+          });
+        }
+      }, 200);
+    });
 
-    const resultPromise = new Promise<RsPostMessageResult<string>>(
+    const resultPromise = new Promise<RsPostMessageResult<T | null>>(
       (resolve) => {
         messageHandler = (event: MessageEvent) => {
           if (event.origin !== this.options.targetOrigin) {
@@ -176,10 +132,10 @@ export class RsimzoClient {
             return;
           }
 
-          if (event.data?.type === "auth_ready") {
+          if (event.data?.type === "ready") {
             sendPayload(popup);
           } else {
-            resolve(event.data as RsPostMessageResult<string>);
+            resolve(event.data as RsPostMessageResult<T | null>);
           }
         };
 
@@ -201,13 +157,6 @@ export class RsimzoClient {
 
     cleanup();
     return result;
-  }
-
-  private waitForIframeLoad(iframe: HTMLIFrameElement): Promise<void> {
-    return new Promise((resolve) => {
-      // Use the 'load' event on the iframe element — works cross-origin.
-      iframe.addEventListener("load", () => resolve(), { once: true });
-    });
   }
 
   private openWindow(
