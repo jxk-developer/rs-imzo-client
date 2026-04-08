@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.58
+
+[compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.57...v0.0.58)
+
+### 🏡 Chore
+
+- **release:** V0.0.57 ([394f758](https://github.com/jxk-developer/rs-imzo-client/commit/394f758))
+- 3 ([20191f2](https://github.com/jxk-developer/rs-imzo-client/commit/20191f2))
+
+### ❤️ Contributors
+
+- Jx_kurbanov <kurbanov.j.kh@gmail.com>
+
 ## v0.0.57
 
 [compare changes](https://github.com/jxk-developer/rs-imzo-client/compare/v0.0.56...v0.0.57)
