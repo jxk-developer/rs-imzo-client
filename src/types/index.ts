@@ -25,6 +25,7 @@ export interface RsCertificatesOptions {
 export interface RsSignatureInfo {
   uid: string
   serial: string
+  label: string
   fullName: string
   createdAt: number
   expireAt: number
